@@ -13,3 +13,28 @@ class ToDoItem: NSManagedObject {
     @NSManaged var completed:Bool
     @NSManaged var name: String
 }
+
+class ToDoItemStore {
+    let context: NSManagedObjectContext = {
+        let appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
+        return appDelegate.managedObjectContext
+    }()
+    
+    func fetch() -> NSArray {
+        var request = NSFetchRequest(entityName: "ToDoItem")
+        var items: NSArray = context.executeFetchRequest(request, error: nil)
+        return items
+    }
+    
+    func updateStatus(item: ToDoItem) {
+        var completed = item.valueForKey("completed") as Bool
+        item.setValue(!completed, forKey: "completed")
+        context.save(nil)
+    }
+    
+    func create(name: String) {
+        var newItem = NSEntityDescription.insertNewObjectForEntityForName("ToDoItem", inManagedObjectContext: context) as ToDoItem
+        newItem.setValue(name, forKey: "name")
+        newItem.setValue(false, forKey: "completed")
+    }
+}

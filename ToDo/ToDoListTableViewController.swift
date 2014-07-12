@@ -11,6 +11,7 @@ import CoreData
 
 class ToDoListTableViewController: UITableViewController {
     var toDoItems = NSArray()
+    let store = ToDoItemStore()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,12 +19,7 @@ class ToDoListTableViewController: UITableViewController {
     }
 
     func loadData() {
-        var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
-        var context: NSManagedObjectContext = appDelegate.managedObjectContext
-        
-        var request = NSFetchRequest(entityName: "ToDoItem")
-        var items: NSArray = context.executeFetchRequest(request, error: nil)
-        toDoItems = items
+        toDoItems = store.fetch()
     }
 
     override func didReceiveMemoryWarning() {
@@ -66,14 +62,8 @@ class ToDoListTableViewController: UITableViewController {
     override func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
-        var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
-        var context: NSManagedObjectContext = appDelegate.managedObjectContext
-        
-        var tappedItem = toDoItems[indexPath.row] as NSManagedObject
-        var completed = tappedItem.valueForKey("completed") as Bool
-        
-        tappedItem.setValue(!completed, forKey: "completed")
-        context.save(nil)
+        var tappedItem = toDoItems[indexPath.row] as ToDoItem
+        store.updateStatus(tappedItem)
         
         loadData()
         tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.None)

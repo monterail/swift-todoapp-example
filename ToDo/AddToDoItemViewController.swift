@@ -13,6 +13,8 @@ class AddToDoItemViewController: UIViewController {
     @IBOutlet var textField: UITextField
     @IBOutlet var doneButton: UIBarButtonItem
     
+    let store = ToDoItemStore()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -25,13 +27,7 @@ class AddToDoItemViewController: UIViewController {
         if (sender as? NSObject != doneButton) { return }
         
         if textField.text.utf16count > 0 {
-            var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
-            var context: NSManagedObjectContext = appDelegate.managedObjectContext
-            
-            var newItem = NSEntityDescription.insertNewObjectForEntityForName("ToDoItem", inManagedObjectContext: context) as ToDoItem
-            
-            newItem.setValue(textField.text, forKey: "name")
-            newItem.setValue(false, forKey: "completed")
+            store.create(textField.text)
         }
     }
 }
