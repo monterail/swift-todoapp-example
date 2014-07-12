@@ -13,8 +13,6 @@ class AddToDoItemViewController: UIViewController {
     @IBOutlet var textField: UITextField
     @IBOutlet var doneButton: UIBarButtonItem
     
-    let store = ToDoItemStore()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -27,7 +25,7 @@ class AddToDoItemViewController: UIViewController {
         if (sender as? NSObject != doneButton) { return }
         
         if textField.text.utf16count > 0 {
-            store.create(textField.text)
+            ToDoItemStore.instance.create(textField.text)
         }
     }
 }

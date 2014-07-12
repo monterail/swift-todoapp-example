@@ -20,6 +20,13 @@ class ToDoItemStore {
         return appDelegate.managedObjectContext
     }()
     
+    class var instance: ToDoItemStore {
+        struct Static {
+            static let instance: ToDoItemStore = ToDoItemStore()
+        }
+        return Static.instance
+    }
+    
     func fetch() -> NSArray {
         var request = NSFetchRequest(entityName: "ToDoItem")
         var items: NSArray = context.executeFetchRequest(request, error: nil)

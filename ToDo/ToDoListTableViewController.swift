@@ -11,7 +11,6 @@ import CoreData
 
 class ToDoListTableViewController: UITableViewController {
     var toDoItems = NSArray()
-    let store = ToDoItemStore()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,7 +18,7 @@ class ToDoListTableViewController: UITableViewController {
     }
 
     func loadData() {
-        toDoItems = store.fetch()
+        toDoItems = ToDoItemStore.instance.fetch()
     }
 
     override func didReceiveMemoryWarning() {
@@ -63,9 +62,7 @@ class ToDoListTableViewController: UITableViewController {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
         var tappedItem = toDoItems[indexPath.row] as ToDoItem
-        store.updateStatus(tappedItem)
-        
-        loadData()
+        ToDoItemStore.instance.updateStatus(tappedItem)
         tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.None)
     }
 
