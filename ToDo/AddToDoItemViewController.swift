@@ -7,11 +7,12 @@
 //
 
 import UIKit
+import CoreData
 
 class AddToDoItemViewController: UIViewController {
+    @IBOutlet var textField: UITextField
+    @IBOutlet var doneButton: UIBarButtonItem
     
-    var newItem = ToDoItem(name: nil)
-
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -19,17 +20,18 @@ class AddToDoItemViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
-    
-    @IBOutlet var textField: UITextField
-
-    @IBOutlet var doneButton: UIBarButtonItem
 
     override func prepareForSegue(segue: UIStoryboardSegue!, sender: AnyObject!) {
         if (sender as? NSObject != doneButton) { return }
         
         if textField.text.utf16count > 0 {
-            newItem.name = textField.text
-            newItem.completed = false
+            var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
+            var context: NSManagedObjectContext = appDelegate.managedObjectContext
+            
+            var newItem = NSEntityDescription.insertNewObjectForEntityForName("ToDoItem", inManagedObjectContext: context) as ToDoItem
+            
+            newItem.setValue(textField.text, forKey: "name")
+            newItem.setValue(false, forKey: "completed")
         }
     }
 }

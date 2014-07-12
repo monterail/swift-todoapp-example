@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		04575C6E1971525F00B5CF9A /* AddToDoItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04575C6D1971525F00B5CF9A /* AddToDoItemViewController.swift */; };
+		0404D2521971F40C0008633B /* AddToDoItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0404D2511971F40C0008633B /* AddToDoItemViewController.swift */; };
+		04347EC81971B890006AEE95 /* ToDoItem.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 04347EC61971B890006AEE95 /* ToDoItem.xcdatamodeld */; };
 		04575C701971530200B5CF9A /* ToDoListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04575C6F1971530200B5CF9A /* ToDoListTableViewController.swift */; };
 		04575C731971590B00B5CF9A /* ToDoItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04575C721971590B00B5CF9A /* ToDoItem.swift */; };
 		04903DE5197128C300959216 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04903DE4197128C300959216 /* AppDelegate.swift */; };
@@ -34,9 +35,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		04575C6D1971525F00B5CF9A /* AddToDoItemViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddToDoItemViewController.swift; path = ../AddToDoItemViewController.swift; sourceTree = "<group>"; };
+		0404D2511971F40C0008633B /* AddToDoItemViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddToDoItemViewController.swift; sourceTree = "<group>"; };
+		04347EC71971B890006AEE95 /* ToDoItem.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ToDoItem.xcdatamodel; sourceTree = "<group>"; };
 		04575C6F1971530200B5CF9A /* ToDoListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToDoListTableViewController.swift; sourceTree = "<group>"; };
-		04575C711971544400B5CF9A /* ToDoListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ToDoListTableViewController.h; sourceTree = "<group>"; };
 		04575C721971590B00B5CF9A /* ToDoItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToDoItem.swift; sourceTree = "<group>"; };
 		04903DDF197128C300959216 /* ToDo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04903DE3197128C300959216 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -69,8 +70,7 @@
 		04347EC41971B743006AEE95 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				04575C6D1971525F00B5CF9A /* AddToDoItemViewController.swift */,
-				04575C711971544400B5CF9A /* ToDoListTableViewController.h */,
+				0404D2511971F40C0008633B /* AddToDoItemViewController.swift */,
 				04575C6F1971530200B5CF9A /* ToDoListTableViewController.swift */,
 			);
 			name = Controllers;
@@ -80,6 +80,7 @@
 			isa = PBXGroup;
 			children = (
 				04575C721971590B00B5CF9A /* ToDoItem.swift */,
+				04347EC61971B890006AEE95 /* ToDoItem.xcdatamodeld */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -240,9 +241,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				04575C6E1971525F00B5CF9A /* AddToDoItemViewController.swift in Sources */,
+				0404D2521971F40C0008633B /* AddToDoItemViewController.swift in Sources */,
 				04575C731971590B00B5CF9A /* ToDoItem.swift in Sources */,
 				04903DE5197128C300959216 /* AppDelegate.swift in Sources */,
+				04347EC81971B890006AEE95 /* ToDoItem.xcdatamodeld in Sources */,
 				04575C701971530200B5CF9A /* ToDoListTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -437,6 +439,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		04347EC61971B890006AEE95 /* ToDoItem.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				04347EC71971B890006AEE95 /* ToDoItem.xcdatamodel */,
+			);
+			currentVersion = 04347EC71971B890006AEE95 /* ToDoItem.xcdatamodel */;
+			path = ToDoItem.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 04903DD7197128C200959216 /* Project object */;
 }

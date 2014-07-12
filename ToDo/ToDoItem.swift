@@ -7,12 +7,9 @@
 //
 
 import UIKit
+import CoreData
 
-class ToDoItem: NSObject {
-    var completed:Bool = false
-    var name: String?
-    
-    init(name: String?) {
-        self.name = name
-    }
+class ToDoItem: NSManagedObject {
+    @NSManaged var completed:Bool
+    @NSManaged var name: String
 }

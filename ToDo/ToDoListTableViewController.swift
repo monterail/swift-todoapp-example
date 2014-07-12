@@ -7,20 +7,23 @@
 //
 
 import UIKit
+import CoreData
 
 class ToDoListTableViewController: UITableViewController {
-    var todoItems = [ToDoItem]()
-
+    var toDoItems = NSArray()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadInitialData()
+        loadData()
     }
-    
-    func loadInitialData() {
-        var milk = ToDoItem(name: "Milk")
-        var bread = ToDoItem(name: "Bread")
-        var butter = ToDoItem(name: "Butter")
-        todoItems = [milk, bread, butter]
+
+    func loadData() {
+        var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
+        var context: NSManagedObjectContext = appDelegate.managedObjectContext
+        
+        var request = NSFetchRequest(entityName: "ToDoItem")
+        var items: NSArray = context.executeFetchRequest(request, error: nil)
+        toDoItems = items
     }
 
     override func didReceiveMemoryWarning() {
@@ -32,37 +35,47 @@ class ToDoListTableViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
-        return todoItems.count
+        return toDoItems.count
     }
-    
+
     @IBAction func unwindToList(segue:UIStoryboardSegue) {
         let source = segue.sourceViewController as AddToDoItemViewController
-        let item = source.newItem as ToDoItem
-        if item.name != nil {
-            todoItems += item
+        let field = source.textField as UITextField
+        if field.text != nil {
+            loadData()
             tableView.reloadData()
         }
     }
 
     override func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell? {
         let identifier = "ListPrototypeCell"
-        let cell = tableView.dequeueReusableCellWithIdentifier(identifier) as UITableViewCell
-        let item = todoItems[indexPath.row]
-        cell.textLabel.text = item.name
+        var cell = tableView.dequeueReusableCellWithIdentifier(identifier) as UITableViewCell
+        var item = toDoItems[indexPath.row] as NSManagedObject
+        cell.textLabel.text = item.valueForKey("name") as String
         setCellStatus(cell, item: item)
         return cell
     }
-    
-    func setCellStatus(cell: UITableViewCell, item: ToDoItem) {
+
+    func setCellStatus(cell: UITableViewCell, item: NSManagedObject) {
         let checked = UITableViewCellAccessoryType.Checkmark
         let none = UITableViewCellAccessoryType.None
-        cell.accessoryType = item.completed ? checked : none
+        var completed = item.valueForKey("completed") as Bool
+        cell.accessoryType = completed ? checked : none
     }
-    
+
     override func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
-        let tappedItem = todoItems[indexPath.row]
-        tappedItem.completed = !tappedItem.completed
+        
+        var appDelegate: AppDelegate = UIApplication.sharedApplication().delegate as AppDelegate
+        var context: NSManagedObjectContext = appDelegate.managedObjectContext
+        
+        var tappedItem = toDoItems[indexPath.row] as NSManagedObject
+        var completed = tappedItem.valueForKey("completed") as Bool
+        
+        tappedItem.setValue(!completed, forKey: "completed")
+        context.save(nil)
+        
+        loadData()
         tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.None)
     }
 
