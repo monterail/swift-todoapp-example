@@ -9,56 +9,81 @@
 import UIKit
 import CoreData
 
-class ToDoListTableViewController: UITableViewController {
+class ToDoListTableViewController: UITableViewController, NSFetchedResultsControllerDelegate {
     var toDoItems = NSArray()
+
+    @lazy
+    var fetchedResultsController: NSFetchedResultsController =
+    {
+        var fetch: NSFetchRequest = NSFetchRequest(entityName: "ToDoItem")
+        fetch.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        
+        var frc: NSFetchedResultsController = NSFetchedResultsController(
+            fetchRequest: fetch,
+            managedObjectContext: ToDoItemStore.instance.context,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        
+        frc.delegate = self
+        
+        return frc
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadData()
+        loadData(false)
     }
 
-    func loadData() {
-        toDoItems = ToDoItemStore.instance.fetch()
+    func loadData(reload: Bool) {
+        fetchedResultsController.performFetch(nil)
+        
+        if reload {
+            tableView.reloadData()
+        }
     }
 
     override func numberOfSectionsInTableView(tableView: UITableView!) -> Int {
-        return 1
+        return fetchedResultsController.sections.count
     }
 
     override func tableView(tableView: UITableView!, numberOfRowsInSection section: Int) -> Int {
-        return toDoItems.count
+        let sectionInfo = fetchedResultsController.sections[section] as NSFetchedResultsSectionInfo
+        return sectionInfo.numberOfObjects
     }
 
     @IBAction func unwindToList(segue:UIStoryboardSegue) {
         let source = segue.sourceViewController as AddToDoItemViewController
         let field = source.textField as UITextField
         if field.text != nil {
-            loadData()
-            tableView.reloadData()
+            loadData(true)
         }
     }
 
     override func tableView(tableView: UITableView!, cellForRowAtIndexPath indexPath: NSIndexPath!) -> UITableViewCell? {
-        let identifier = "ListPrototypeCell"
-        var cell = tableView.dequeueReusableCellWithIdentifier(identifier) as UITableViewCell
-        var item = toDoItems[indexPath.row] as NSManagedObject
-        cell.textLabel.text = item.valueForKey("name") as String
+        var cell = tableView.dequeueReusableCellWithIdentifier("ListPrototypeCell") as UITableViewCell
+
+        var item: ToDoItem = fetchedResultsController.objectAtIndexPath(indexPath) as ToDoItem
+        cell.textLabel.text = item.name
+        
         setCellStatus(cell, item: item)
+        
         return cell
     }
 
-    func setCellStatus(cell: UITableViewCell, item: NSManagedObject) {
+    func setCellStatus(cell: UITableViewCell, item: ToDoItem) {
         let checked = UITableViewCellAccessoryType.Checkmark
         let none = UITableViewCellAccessoryType.None
         var completed = item.valueForKey("completed") as Bool
+        
         cell.accessoryType = completed ? checked : none
     }
 
     override func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
-        tableView.deselectRowAtIndexPath(indexPath, animated: false)
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
-        var tappedItem = toDoItems[indexPath.row] as NSManagedObject
+        var tappedItem: ToDoItem = fetchedResultsController.objectAtIndexPath(indexPath) as ToDoItem
         ToDoItemStore.instance.updateStatus(tappedItem)
+        
         tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.None)
     }
 

@@ -40,12 +40,7 @@ class ToDoItemStore {
         return request
     }
     
-    func fetch() -> NSArray {
-        var request = generateRequest(nil)
-        return context.executeFetchRequest(request, error: nil) as NSArray
-    }
-    
-    func updateStatus(item: NSManagedObject) {
+    func updateStatus(item: ToDoItem) {
         var completed = item.valueForKey("completed") as Bool
         item.setValue(!completed, forKey: "completed")
         save()
@@ -55,14 +50,15 @@ class ToDoItemStore {
         context.save(nil)
     }
     
-    func create(name: String) {
-        var newItem = NSEntityDescription.insertNewObjectForEntityForName("ToDoItem", inManagedObjectContext: context) as NSManagedObject
+    func create(name: String) -> ToDoItem {
+        var newItem = NSEntityDescription.insertNewObjectForEntityForName("ToDoItem", inManagedObjectContext: context) as ToDoItem
         newItem.setValue(name, forKey: "name")
         newItem.setValue(false, forKey: "completed")
         save()
+        return newItem
     }
     
-    func delete(item: NSManagedObject) {
+    func delete(item: ToDoItem) {
         context.deleteObject(item)
     }
     
@@ -71,7 +67,7 @@ class ToDoItemStore {
         var toDelete = context.executeFetchRequest(request, error: nil) as NSArray
         for item in toDelete {
             if item.valueForKey("completed") as Bool == true {
-                delete(item as NSManagedObject)
+                delete(item as ToDoItem)
             }
         }
     }
