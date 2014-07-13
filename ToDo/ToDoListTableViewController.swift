@@ -107,10 +107,10 @@ class ToDoListTableViewController: UITableViewController, NSFetchedResultsContro
     override func setEditing(editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
         tableView.setEditing(editing, animated: true)
-        if editing != nil {
-            addButton.enabled = true
-        } else {
+        if editing == true {
             addButton.enabled = false
+        } else {
+            addButton.enabled = true
         }
     }
     
