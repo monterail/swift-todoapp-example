@@ -27,21 +27,52 @@ class ToDoItemStore {
         return Static.instance
     }
     
-    func fetch() -> NSArray {
-        var request = NSFetchRequest(entityName: "ToDoItem")
-        var items: NSArray = context.executeFetchRequest(request, error: nil)
-        return items
+    init() {
+        deleteCompleted()
     }
     
-    func updateStatus(item: ToDoItem) {
+    func generateRequest(predicate: NSPredicate?) -> NSFetchRequest {
+        var request = NSFetchRequest(entityName: "ToDoItem")
+        request.returnsObjectsAsFaults = false
+        if predicate != nil {
+            request.predicate = predicate
+        }
+        return request
+    }
+    
+    func fetch() -> NSArray {
+        var request = generateRequest(nil)
+        return context.executeFetchRequest(request, error: nil) as NSArray
+    }
+    
+    func updateStatus(item: NSManagedObject) {
         var completed = item.valueForKey("completed") as Bool
         item.setValue(!completed, forKey: "completed")
+        save()
+    }
+    
+    func save() {
         context.save(nil)
     }
     
     func create(name: String) {
-        var newItem = NSEntityDescription.insertNewObjectForEntityForName("ToDoItem", inManagedObjectContext: context) as ToDoItem
+        var newItem = NSEntityDescription.insertNewObjectForEntityForName("ToDoItem", inManagedObjectContext: context) as NSManagedObject
         newItem.setValue(name, forKey: "name")
         newItem.setValue(false, forKey: "completed")
+        save()
+    }
+    
+    func delete(item: NSManagedObject) {
+        context.deleteObject(item)
+    }
+    
+    func deleteCompleted() {
+        var request = generateRequest(NSPredicate(format: "completed = %@", true))
+        var toDelete = context.executeFetchRequest(request, error: nil) as NSArray
+        for item in toDelete {
+            if item.valueForKey("completed") as Bool == true {
+                delete(item as NSManagedObject)
+            }
+        }
     }
 }

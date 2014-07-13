@@ -21,10 +21,6 @@ class ToDoListTableViewController: UITableViewController {
         toDoItems = ToDoItemStore.instance.fetch()
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
-
     override func numberOfSectionsInTableView(tableView: UITableView!) -> Int {
         return 1
     }
@@ -61,7 +57,7 @@ class ToDoListTableViewController: UITableViewController {
     override func tableView(tableView: UITableView!, didSelectRowAtIndexPath indexPath: NSIndexPath!) {
         tableView.deselectRowAtIndexPath(indexPath, animated: false)
         
-        var tappedItem = toDoItems[indexPath.row] as ToDoItem
+        var tappedItem = toDoItems[indexPath.row] as NSManagedObject
         ToDoItemStore.instance.updateStatus(tappedItem)
         tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.None)
     }
