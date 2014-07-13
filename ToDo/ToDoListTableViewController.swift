@@ -35,10 +35,14 @@ class ToDoListTableViewController: UITableViewController, NSFetchedResultsContro
     }
 
     func loadData(reload: Bool) {
-        fetchedResultsController.performFetch(nil)
-        
-        if reload {
-            tableView.reloadData()
+        var context = fetchedResultsController.managedObjectContext
+        context.performBlockAndWait {
+            let error: NSErrorPointer = nil
+            self.fetchedResultsController.performFetch(error)
+            
+            if reload {
+                self.tableView.reloadData()
+            }
         }
     }
 

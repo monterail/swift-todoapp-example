@@ -47,7 +47,10 @@ class ToDoItemStore {
     }
     
     func save() {
-        context.save(nil)
+        context.performBlockAndWait {
+            let error: NSErrorPointer = nil
+            self.context.save(error)
+        }
     }
     
     func create(name: String) -> ToDoItem {
@@ -59,7 +62,9 @@ class ToDoItemStore {
     }
     
     func delete(item: ToDoItem) {
-        context.deleteObject(item)
+        context.performBlockAndWait {
+            self.context.deleteObject(item)
+        }
     }
     
     func deleteCompleted() {

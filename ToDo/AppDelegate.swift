@@ -46,7 +46,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     if !_managedObjectContext {
         let coordinator = self.persistentStoreCoordinator
         if coordinator != nil {
-            _managedObjectContext = NSManagedObjectContext()
+            _managedObjectContext = NSManagedObjectContext(concurrencyType: NSManagedObjectContextConcurrencyType.MainQueueConcurrencyType)
+
             _managedObjectContext!.persistentStoreCoordinator = coordinator
         }
         }
