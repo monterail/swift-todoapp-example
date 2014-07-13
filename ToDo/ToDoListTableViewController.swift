@@ -90,5 +90,14 @@ class ToDoListTableViewController: UITableViewController, NSFetchedResultsContro
         
         tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.None)
     }
+    
+    override func tableView(tableView: UITableView!, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
+        if (editingStyle == UITableViewCellEditingStyle.Delete) {
+            var item: ToDoItem = fetchedResultsController.objectAtIndexPath(indexPath) as ToDoItem
+            ToDoItemStore.instance.delete(item)
+            loadData(false)
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+        }
+    }
 
 }
