@@ -10,13 +10,15 @@ import UIKit
 import CoreData
 
 class ToDoListTableViewController: UITableViewController, NSFetchedResultsControllerDelegate {
-    var toDoItems = NSArray()
+    var toDoItems = NSMutableArray()
 
+    @IBOutlet var addButton: UIBarButtonItem
+    
     @lazy
     var fetchedResultsController: NSFetchedResultsController =
     {
         var fetch: NSFetchRequest = NSFetchRequest(entityName: "ToDoItem")
-        fetch.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+        fetch.sortDescriptors = [NSSortDescriptor(key: "position", ascending: true)]
         
         var frc: NSFetchedResultsController = NSFetchedResultsController(
             fetchRequest: fetch,
@@ -30,6 +32,7 @@ class ToDoListTableViewController: UITableViewController, NSFetchedResultsContro
     }()
     
     override func viewDidLoad() {
+        self.navigationItem.leftBarButtonItem = self.editButtonItem()
         super.viewDidLoad()
         loadData(false)
     }
@@ -39,6 +42,7 @@ class ToDoListTableViewController: UITableViewController, NSFetchedResultsContro
         context.performBlockAndWait {
             let error: NSErrorPointer = nil
             self.fetchedResultsController.performFetch(error)
+            self.toDoItems = NSMutableArray(array: self.fetchedResultsController.fetchedObjects)
             
             if reload {
                 self.tableView.reloadData()
@@ -88,7 +92,7 @@ class ToDoListTableViewController: UITableViewController, NSFetchedResultsContro
         var tappedItem: ToDoItem = fetchedResultsController.objectAtIndexPath(indexPath) as ToDoItem
         ToDoItemStore.instance.updateStatus(tappedItem)
         
-        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.None)
+        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: .None)
     }
     
     override func tableView(tableView: UITableView!, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath!) {
@@ -99,5 +103,25 @@ class ToDoListTableViewController: UITableViewController, NSFetchedResultsContro
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
         }
     }
-
+    
+    override func setEditing(editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        tableView.setEditing(editing, animated: true)
+        if editing != nil {
+            addButton.enabled = true
+        } else {
+            addButton.enabled = false
+        }
+    }
+    
+    override func tableView(tableView: UITableView!, canMoveRowAtIndexPath indexPath: NSIndexPath!) -> Bool {
+        return true
+    }
+    
+    override func tableView(tableView: UITableView!, moveRowAtIndexPath sourceIndexPath: NSIndexPath!, toIndexPath destinationIndexPath: NSIndexPath!) {
+        var newItem = toDoItems.objectAtIndex(sourceIndexPath.row) as ToDoItem
+        var oldItem = toDoItems.objectAtIndex(destinationIndexPath.row) as ToDoItem
+        ToDoItemStore.instance.updatePosition(newItem, index: destinationIndexPath.row)
+        ToDoItemStore.instance.updatePosition(oldItem, index: sourceIndexPath.row)
+    }
 }

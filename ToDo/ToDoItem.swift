@@ -12,6 +12,7 @@ import CoreData
 class ToDoItem: NSManagedObject {
     @NSManaged var completed:Bool
     @NSManaged var name: String
+    @NSManaged var position: Int16
 }
 
 class ToDoItemStore {
@@ -46,6 +47,11 @@ class ToDoItemStore {
         save()
     }
     
+    func updatePosition(item: ToDoItem, index: AnyObject) {
+        item.setValue(index, forKey: "position")
+        save()
+    }
+    
     func save() {
         context.performBlockAndWait {
             let error: NSErrorPointer = nil
@@ -62,9 +68,8 @@ class ToDoItemStore {
     }
     
     func delete(item: ToDoItem) {
-        context.performBlockAndWait {
-            self.context.deleteObject(item)
-        }
+        self.context.deleteObject(item)
+        save()
     }
     
     func deleteCompleted() {
