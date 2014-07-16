@@ -111,6 +111,10 @@ class ToDoListTableViewController: UITableViewController, NSFetchedResultsContro
             addButton.enabled = false
         } else {
             addButton.enabled = true
+            if ToDoItemStore.instance.context.hasChanges {
+                ToDoItemStore.instance.save()
+                loadData(true)
+            }
         }
     }
     

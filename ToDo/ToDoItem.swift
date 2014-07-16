@@ -49,7 +49,6 @@ class ToDoItemStore {
     
     func updatePosition(item: ToDoItem, index: AnyObject) {
         item.setValue(index, forKey: "position")
-        save()
     }
     
     func save() {
